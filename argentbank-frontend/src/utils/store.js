@@ -1,12 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit";
-import loginReducer from "../utils/reducers/LoginReducer";
-import userReducer from "../utils/reducers/UserReducer";
+import { combineReducers, createStore } from 'redux'
+import userReducer from "../features/userReducer";
+// import loginReducer from "../features/loginReducer"
 
-// creation du store et des reducer
+const reducer = combineReducers({
+  getUser: userReducer,
+  // getLogin: loginReducer,
+  
+})
 
-export const store = configureStore({
-  reducer: {
-    login: loginReducer,
-    user: userReducer,
-  },
-});
+// Pour connecter les Redux Devtools on utilise
+// un fonction disponible sur l'objet window
+// Si cette fonction existe on l'exécute.
+const reduxDevtools =
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+
+// on utilise le résultat de cette fonction en parametre de createStore
+const store = createStore(reducer, reduxDevtools)
+
+export default store

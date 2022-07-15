@@ -65,12 +65,12 @@ body {
 
 .hero-content {
   position: relative;
-  top: 3rem;
+  top: 4em;
   width: 210px;
   background: white;
-  padding: 2rem;
+  padding: 2em;
   text-align: left;
-  margin: 0 auto;
+  margin: 0 0 0 74em;
 }
 
 .hero-content .subtitle {

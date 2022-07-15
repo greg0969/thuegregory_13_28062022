@@ -7,8 +7,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Footer from './components/Footer';
-import { store } from "./utils/store";
+import store from './utils/store'
 import '../src/styles/style.css';
+import Erreur from './pages/Erreur';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -21,7 +22,8 @@ root.render(
           <Routes>
             <Route path="/" element={<Home />}/>
             <Route path="/login" element={<Login />}/>
-            {/* <Route path="/profile" element={<Profile />} /> */}
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<Erreur />} />
           </Routes>
           <Footer />
       </BrowserRouter>
