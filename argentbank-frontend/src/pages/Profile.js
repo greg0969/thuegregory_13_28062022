@@ -1,81 +1,96 @@
-import { useSelector, useDispatch, useStore } from "react-redux";
-import { getProfile, updateProfile } from "../utils/apiFetch/ApiFetch";
-import Accounts from "../components/Accounts"
-import Erreur from "../pages/Erreur"
-import { useEffect, useRef, useState } from "react";
-import { saveProfile } from "../features/userReducer";
+import React from 'react';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Accounts from '../components/Accounts';
+import { setUser, updateInfo } from "../features/userSlice";
+import { getProfile, updateProfile} from "../utils/apiFetch/ApiFetch";
 
-function Profile() {
+function Profile () {
 
-  const dispatch = useDispatch();
-  const [data, setData] = useState();
-  const [updateMode, setUpdateMode] = useState(false);
-  const firstName = useRef();
-  const lastName = useRef();
+    const [inputData, setInputData] = useState({
+        firstName: "",
+        lastName: "",
+    });
 
-  async function getProfileData() {
-    try {
-        const response = await getProfile();
-        setData(response)
+    const [editMode, setEditMode] = useState(false);
+
+    let dispatch = useDispatch();
+    let token = useSelector((state) => state.user.token);
+    
+    useEffect(() => {
+        const getUserProfile = async () => {
+            await dispatch(getProfile(token))
+            .then(data => {
+                dispatch(setUser(data))
+            })
+            .catch(err => console.log("error", err))
+        }
+        getUserProfile();
+    }, [dispatch, token]);
+
+    const handleChange = (event) => {
+        const {name, value} = event.target;
+        setInputData(prevInputData => ({
+            ...prevInputData,
+            [name]: value
+        }))
     }
-    catch (error) {
-        console.log(error);
-        
-    }   
-  }
-  getProfileData();
 
-  async function updateProfileData() {
-    try{
-      
-        const response = await updateProfile(firstName.current.value, lastName.current.value);
-        dispatch(saveProfile(response));
-        setUpdateMode(false);
-      
-    }catch(error){
-      console.log(error);
+    function handleSubmit (e) {
+        e.preventDefault();
+        updateProfile(inputData.firstName, inputData.lastName, token)
+        dispatch(getProfile(token))
+        .then(data => dispatch(updateInfo(data)))
+        .catch(err => console.log("error", err))
+        setEditMode(false);
     }
-  }
 
+    let user = useSelector((state) => state.user.currentUser);
 
-  return data ? (
-    <main className="main bg-dark">
-      {updateMode ? (
-        <div className="header">
-          <h1>Welcome back</h1>
-          <div className="editor">
-            <input
-            type="text"
-            placeholder={data.firstName}
-            className="firstNameInput"
-            ref={firstName}
-            />
-            <input
-            type="text"
-            placeholder={data.lastName}
-            className="lastNameInput"
-            ref={lastName}
-            />
-          </div>
-          <div className="editor">
-            <button className="editor-button" onClick={updateProfileData}>Save</button>
-            <button className="editor-button" onClick={()=>setUpdateMode(false)}>Cancel</button>
-          </div>
-        </div>
-      ):(
-        <div className="header">
-          <h1>Welcome back
-          <br/>
-          {data.firstName + " " + data.lastName} 
-          </h1>
-          <button className="edit-button" onClick={()=>setUpdateMode(true)}>Edit Name</button>
-        </div>
-      )}
-      <h2 className="sr-only">Accounts</h2>
-      <Accounts />
-    </main>
-  ):(
-    <Erreur />
-  )
+    return (
+        <main className="main bg-dark">
+            <div className="profile-header">
+                <h1>
+                Welcome back
+                <br />
+                {user ? user.firstName : "John"} {user ? user.lastName : "Doe"}
+                </h1>
+
+                { editMode ?
+                    <div className='change-data'>
+                        <div className='change-data-input'>
+                            <input 
+                            type="text" 
+                            id="firstName" 
+                            name='firstName'
+                            value={inputData.firstName}
+                            placeholder="First Name"
+                            onChange={handleChange}
+                            />
+                            <input 
+                            type="text" 
+                            id="lastName" 
+                            name='lastName'
+                            value={inputData.lastName}
+                            placeholder= "Last Name"
+                            onChange={handleChange}
+                            />
+                        </div>
+                        <div className='change-data-button'>
+                            <button className='edit-button' onClick={handleSubmit}>Save</button>
+                            <button className='edit-button' onClick={() => setEditMode(false)}>Cancel</button>
+                        </div>
+                    </div>
+                :
+                    <button className="edit-button" onClick={() => setEditMode(true)}>
+                    Edit Name
+                    </button>
+                }
+            </div>
+            <h2 className="sr-only">Accounts</h2>
+            <Accounts />
+      </main>
+    );
 }
+
 export default Profile;

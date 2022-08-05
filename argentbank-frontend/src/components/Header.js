@@ -1,75 +1,40 @@
-import logo from "../assets/argentBankLogo.png"
+import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteToken, resetProfile, saveProfile } from "../features/userReducer";
-import { getProfile } from "../utils/apiFetch/ApiFetch";
+import logo from "../assets/argentBankLogo.png"
+import { logOut } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
 * This function create the header component and manage the infos shown based on the user's info recovered from the database.
 */
 function Header() {
 
-    const token = useSelector((state) => state.token);
-    const userDatas = useSelector((state) => state.profile);
-    const dispatch = useDispatch();
-    const [isLogged, setIsLogged] = useState(false);
-    console.log(token)
-    
-    useEffect(() => {
-        async function getUserDatas() {
-            const response = await getProfile();
-            dispatch(saveProfile(response));
-        }
-        if (token){
-            getUserDatas();
-            setIsLogged(true);
-        }
-    }, [dispatch, token]);
+  let loggedIn = useSelector((state) => state.user.loggedIn)
+  let user = useSelector((state) => state.user.currentUser)
+  let dispatch = useDispatch()
 
-    /**
-    * This function delete the token when a user disconnect him.
-    */
-
-    function logOut(){
-        dispatch(deleteToken());
-        dispatch(resetProfile());
-        setIsLogged(false);
-    }
-
-    return(
-        <header>
-        <nav className="main-nav">
-          <Link className="main-nav-logo" to="/">
-            <img
-              className="main-nav-logo-image"
-              alt="Argent Bank Logo"
-              src={logo}
-            />
-            <h1 className="sr-only">Argent Bank</h1>
-          </Link>
-          {isLogged ? (
-            <div className="nav-right">
-              <Link className="main-nav-item" to="/profile">
-                <i className="fa fa-user-circle"></i>
-                {userDatas.firstName}
-              </Link>
-              <Link className="main-nav-item" to="/" onClick={logOut}>
-                <i className="fa fa-sign-out"></i>
-                Sign Out
-              </Link>
+  return (
+    <header className="header">
+        <nav className="main-nav navbar navbar-expand-lg navbar-light d-flex justify-content-between">
+            <Link to="/"> <img className="main-nav-logo-image header-logo" src={logo} alt="Logo Argent Bank" /> </Link>
+            <div className="header-links">
+              {
+                loggedIn ?
+                (
+                  <div className="main-nav-links">
+                    <Link className="main-nav-item" to="/profile"></Link>
+                    <Link className="main-nav-item" to="/" onClick={dispatch(logOut)}> Sign out </Link>
+                  </div>
+                )
+                :
+                (
+                  <Link className="main-nav-item" to="/login"> <span className="header-signin d-flex align-items-center "> Sign In </span> </Link>
+                )
+              }
             </div>
-          ) : (
-            <div className="nav-right">
-              <Link className="main-nav-item" to="/login">
-                <i className="fa fa-user-circle"></i>
-                Sign In
-              </Link>
-            </div>
-          )}
         </nav>
-      </header>
-    );
+    </header>
+  );
 }
 
 export default Header;

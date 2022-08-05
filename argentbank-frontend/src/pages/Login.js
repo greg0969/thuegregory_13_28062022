@@ -1,31 +1,41 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getLogin } from "../utils/apiFetch/ApiFetch";
-import { saveToken } from "../features/userReducer";
-
+import { logIn } from "../features/userSlice";
+import { getLogin, logInUser } from "../utils/apiFetch/ApiFetch";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 function Login() {
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    /**
-    * This function manage the authentication of the user by communicating with the database in order to verify the login infos (email/password). If correct, it navigates to the profile page.
-    */
-    async function authentication(event) {
-        event.preventDefault();
-        try {
-            const response = await getLogin(email, password);
-            dispatch(saveToken(response));
-            navigate("/profile");
-        }
-        catch (error) {
-            console.log(error);
-            
-        }
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+        rememberMe: false
+    });
+
+    function handleChange(event) {
+        const {name, value, type, checked} = event.target
+        setFormData(prevFormeData => ({
+            ...prevFormeData,
+            [name]: type === "checkbox" ? checked : value
+        }))
+    }
+
+    const navigate = useNavigate();
+    let username = formData.username;
+    let password = formData.password;
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+        dispatch(getLogin(username, password))
+        .then(data => {
+            dispatch(logIn(data));
+            if (data) {
+                navigate("/profile");
+            }
+        })
     }
 
     return (
@@ -33,35 +43,39 @@ function Login() {
             <section className="sign-in-content">
                 <i className="fa fa-user-circle sign-in-icon"></i>
                 <h1>Sign In</h1>
-                <form onSubmit={authentication}>
-                    <div className="input-wrapper">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="text"
-                            id="email"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value)
-                            }}
-                        />
-                    </div>
-                    <div className="input-remember">
-                        <input type="checkbox" id="remember-me" />
-                        <label htmlFor="remember-me">Remember me</label>
-                    </div>
-                    <button type="submit" className="sign-in-button">Sign In</button>
-                </form>
+                <form onSubmit={handleSubmit}>
+            <div className="input-wrapper">
+                <label htmlFor="username">Username</label>
+                <input
+                type="text"
+                id="username"
+                name='username'
+                required
+                onChange={handleChange}
+                />
+            </div>
+            <div className="input-wrapper">
+                <label htmlFor="password">Password</label>
+                <input
+                type="password"
+                id="password"
+                name='password'
+                onChange={handleChange}
+                />
+            </div>
+            <div className="input-remember">
+                <input
+                type="checkbox"
+                id="remember-me"
+                name='rememberMe'
+                onChange={handleChange}
+                />
+                <label htmlFor="remember-me">Remember me</label>
+            </div>
+            <button type="submit" className="sign-in-button">
+                Sign In
+            </button>
+            </form>
             </section>
         </main>
     );
