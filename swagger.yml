@@ -1,0 +1,198 @@
+swagger: '2.0'
+info:
+  description: Contains proposed API endpoints for client transactions
+  version: 1.0.0
+  title: Bank Argent APi documentation
+  termsOfService: http://swagger.io/terms/
+host: localhost:3001
+basePath: /api/v2
+schemes:
+  - https
+  - http
+paths:
+  /user/profile/{accountId}/transactions:
+    get:
+      tags:
+        - User Module
+      summary: Access a specific account
+      description: API to access specific account
+      operationId: accessAccount
+      produces:
+        - application/json
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          description: Id linked to the selected account
+          type: string
+        - in: header
+          name: Authorization
+          required: true
+          description: Attach Bearer JWT token
+          type: string
+      responses:
+        '200':
+          description: Account details retrieved
+          schema:
+            $ref: '#/definitions/account_details'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal Server Error
+      security:
+        - Bearer: []
+  /user/profile/{accountId}/transactions/{transactionId}:
+    get:
+      tags:
+        - User Module
+      summary: Access a specific account transactions
+      description: API to access specific account transactions
+      operationId: accessAccountTransactions
+      produces:
+        - application/json
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          description: Id linked to the selected account
+          type: string
+        - in: header
+          name: Authorization
+          required: true
+          description: Attach Bearer JWT token
+          type: string
+        - in: path
+          name: transactionId
+          required: true
+          description: Id attached to the specific transaction
+          type: string
+      responses:
+        '200':
+          description: Transaction details retrieved
+          schema:
+            $ref: '#/definitions/account_transaction_details'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal Server Error
+      security:
+        - Bearer: []
+    patch:
+      tags:
+        - User Module
+      summary: Update a specific account transactions
+      description: API to update specific account transactions
+      operationId: updateAccountTransaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          description: Id linked to the selected account
+          type: string
+        - in: header
+          name: Authorization
+          required: true
+          description: Attach Bearer JWT token
+          type: string
+        - in: path
+          name: transactionId
+          required: true
+          description: Id attached to the specific transaction
+          type: string
+      responses:
+        '200':
+          description: Transaction details updated
+          schema:
+            $ref: '#/definitions/account_transaction_update'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal Server Error
+      security:
+        - Bearer: []
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  account_details:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+        example: Account details retrieved
+      body:
+        type: object
+        items: {}
+  account_transaction_details:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+        example: Transaction details retrieved
+      body:
+        type: array
+        items:
+          $ref: '#/definitions/transaction_details'
+  account_transaction_update:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+        example: Transaction details updated successfully
+      body:
+        type: array
+        items:
+          $ref: '#/definitions/transaction_update'
+  transaction_details:
+    type: object
+    properties:
+      id:
+        type: string
+      transaction:
+        type: object
+        properties:
+          transactionType:
+            type: string
+            description: Transaction type
+          category:
+            type: string
+            description: Transaction category
+          date:
+            type: string
+            description: Transaction date
+          description:
+            type: string
+            description: Transaction description
+          amount:
+            type: number
+            description: Transaction amount
+          balance:
+            type: number
+            description: Current account balance
+          note:
+            type: string
+            description: Transaction notes
+  transaction_update:
+    type: object
+    properties:
+      transactionType:
+        type: string
+        example: Electronic
+      category:
+        type: string
+        example: Food
+      notes:
+        type: string
+        example: Transaction made at this restaurant

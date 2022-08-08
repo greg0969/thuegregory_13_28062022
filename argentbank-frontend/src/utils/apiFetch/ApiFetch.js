@@ -10,22 +10,25 @@ export const getLogin = (email, password) => {
     email,
     password,
   })
-  .then((response) => response.data.body.token)
+  .then((response) => {
+      // console.log(response.data.body.token)
+      return response.data.body.token
+    })
 };
 
 
   // Get the profile of the corresponding token
 
-export const getProfile = () => {
+export const getProfile = (token) => {
   return axios
   .post(
     baseUrl+"user/profile",
     {},
     {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      headers: { Authorization: "Bearer " + token },
     }
   )
-  .then((response) => response.data.body)
+  .then((response) => response.data)
 };
 
 //  Update the profile of the corresponding token

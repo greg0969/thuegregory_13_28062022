@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { logIn } from "../features/userSlice";
-import { getLogin, logInUser } from "../utils/apiFetch/ApiFetch";
+import { logIn, getToken } from "../features/userSlice";
+import { getLogin, getProfile } from "../utils/apiFetch/ApiFetch";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
@@ -27,15 +27,17 @@ function Login() {
     let username = formData.username;
     let password = formData.password;
 
+    /* I recover the token from the service and I change the state with the getToken action */
     const handleSubmit = async(e) => {
         e.preventDefault();
-        dispatch(getLogin(username, password))
-        .then(data => {
-            dispatch(logIn(data));
-            if (data) {
-                navigate("/profile");
-            }
-        })
+        const token = await getLogin(username, password)
+        dispatch(getToken(token))
+        const profil = await getProfile(token) // I recover the profil, if the status is 200 so loggedIn => true with logIn action and navigate to the profile page
+        if (profil.status === 200 ) {
+            dispatch(logIn())
+            navigate("/profile",{state:{profil : profil.body}});
+        }
+       
     }
 
     return (

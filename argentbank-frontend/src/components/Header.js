@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 function Header() {
 
   let loggedIn = useSelector((state) => state.user.loggedIn)
-  let user = useSelector((state) => state.user.currentUser)
+  // let user = useSelector((state) => state.user.currentUser)
   let dispatch = useDispatch()
 
   return (
