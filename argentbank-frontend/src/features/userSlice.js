@@ -16,13 +16,14 @@ export const userSlice = createSlice({
             state.loggedIn = true
             
         },
-        userInfo: (state, user) => {
+        userInfo: (state, user) => {            
             state.currentUser = user.payload
         }
         ,
         updateInfo: (state, user) => {
             state.currentUser.firstName = user.payload.firstName
             state.currentUser.lastName = user.payload.lastName
+
         },
 
         logOut: (state) => {

@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 function Header() {
 
   let loggedIn = useSelector((state) => state.user.loggedIn)
-  // let user = useSelector((state) => state.user.currentUser)
+  let user = useSelector((state) => state.user.currentUser)
+  console.log(user)
   let dispatch = useDispatch()
 
   return (
@@ -22,8 +23,8 @@ function Header() {
                 loggedIn ?
                 (
                   <div className="main-nav-links">
-                    <Link className="main-nav-item" to="/profile"></Link>
-                    <Link className="main-nav-item" to="/" onClick={dispatch(logOut)}> Sign out </Link>
+                    <Link className="main-nav-item" to="/profile"><i className="fa fa-user-circle"></i>{user.firstName}</Link>
+                    <Link className="main-nav-item" to="/" onClick={dispatch(logOut)}><i className="fa fa-sign-out"></i> Sign out </Link>
                   </div>
                 )
                 :

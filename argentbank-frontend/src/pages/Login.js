@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { logIn, getToken } from "../features/userSlice";
+import { logIn, getToken, userInfo } from "../features/userSlice";
 import { getLogin, getProfile } from "../utils/apiFetch/ApiFetch";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -26,20 +26,22 @@ function Login() {
     const navigate = useNavigate();
     let username = formData.username;
     let password = formData.password;
-
+    
     /* I recover the token from the service and I change the state with the getToken action */
     const handleSubmit = async(e) => {
         e.preventDefault();
         const token = await getLogin(username, password)
         dispatch(getToken(token))
         const profil = await getProfile(token) // I recover the profil, if the status is 200 so loggedIn => true with logIn action and navigate to the profile page
+        
         if (profil.status === 200 ) {
             dispatch(logIn())
+            dispatch(userInfo(profil.body))
             navigate("/profile",{state:{profil : profil.body}});
         }
        
     }
-
+ 
     return (
         <main className="main bg-dark login">
             <section className="sign-in-content">
