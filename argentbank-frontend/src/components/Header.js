@@ -11,7 +11,6 @@ function Header() {
 
   let loggedIn = useSelector((state) => state.user.loggedIn)
   let user = useSelector((state) => state.user.currentUser)
-  console.log(user)
   let dispatch = useDispatch()
 
   return (
