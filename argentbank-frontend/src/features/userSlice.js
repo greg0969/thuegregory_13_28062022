@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { saveToken } from "../utils/apiFetch/ApiFetch";
 
 export const userSlice = createSlice({
     name: 'user',
@@ -14,7 +15,6 @@ export const userSlice = createSlice({
 
         logIn: (state) => {
             state.loggedIn = true
-            
         },
         userInfo: (state, user) => {            
             state.currentUser = user.payload

@@ -11,8 +11,9 @@ export const getLogin = (email, password) => {
     password,
   })
   .then((response) => {
-      // console.log(response.data.body.token)
+      localStorage.setItem('token', response.data.body.token);
       return response.data.body.token
+      
     })
 };
 
@@ -28,7 +29,9 @@ export const getProfile = (token) => {
       headers: { Authorization: "Bearer " + token },
     }
   )
+  
   .then((response) => response.data)
+  
 };
 
 //  Update the profile of the corresponding token
@@ -47,3 +50,4 @@ export const updateProfile = (firstName, lastName, token) => {
   )
   .then((response) => response.data.body)
 };
+
