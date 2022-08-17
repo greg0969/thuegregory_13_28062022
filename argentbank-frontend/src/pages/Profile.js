@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
 import Accounts from '../components/Accounts';
 import { updateInfo } from "../features/userSlice";
@@ -8,10 +8,11 @@ import { updateProfile } from "../utils/apiFetch/ApiFetch";
 
 function Profile() {
 
-    const location = useLocation();
-    const [inputData, setInputData] = useState({ firstName: location.state.profil.firstName, lastName: location.state.profil.lastName, });
-
+    
     const [editMode, setEditMode] = useState(false);
+    let token = useSelector((state) => state.user.token);
+    let profil = useSelector((state) => state.user.currentUser);
+    const [inputData, setInputData] = useState({ firstName: profil.firstName, lastName: profil.lastName });
 
     let dispatch = useDispatch();
 
@@ -25,12 +26,13 @@ function Profile() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        updateProfile(inputData.firstName, inputData.lastName)
+        updateProfile(inputData.firstName, inputData.lastName,token)
             .then(data => dispatch(updateInfo(data)))
             .catch(err => console.log("error", err))
         setEditMode(false);
     }
-
+    
+    
     return (
         <main className="main bg-dark">
             <div className="profile-header">

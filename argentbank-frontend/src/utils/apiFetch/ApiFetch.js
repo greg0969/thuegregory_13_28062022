@@ -33,7 +33,7 @@ export const getProfile = (token) => {
 
 //  Update the profile of the corresponding token
  
-export const updateProfile = (firstName, lastName) => {
+export const updateProfile = (firstName, lastName, token) => {
   return axios
   .put(
     baseUrl+"user/profile",
@@ -42,7 +42,7 @@ export const updateProfile = (firstName, lastName) => {
       lastName,
     },
     {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      headers: { Authorization: "Bearer " + token },
     }
   )
   .then((response) => response.data.body)

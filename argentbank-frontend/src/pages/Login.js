@@ -37,7 +37,7 @@ function Login() {
             if (profil.status === 200) {
                 dispatch(logIn())
                 dispatch(userInfo(profil.body))
-                navigate("/profile", { state: { profil: profil.body } });
+                navigate("/profile", { state: { profil: profil.body}});
             }
         }
         catch (error) {
