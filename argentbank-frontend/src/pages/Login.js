@@ -1,15 +1,12 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logIn, getToken, userInfo } from "../features/userSlice";
-import { getLogin, getProfile, saveToken } from "../utils/apiFetch/ApiFetch";
+import { getLogin, getProfile } from "../utils/apiFetch/ApiFetch";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 function Login() {
 
     const dispatch = useDispatch();
-
-
 
     const [errorState, setErrorState] = useState(false)
     const [formData, setFormData] = useState({
@@ -41,6 +38,7 @@ function Login() {
             dispatch(getToken(token))
 
             const profil = await getProfile(token) // I recover the profil, if the status is 200 so loggedIn => true with logIn action and navigate to the profile page
+            localStorage.setItem("localProfil", profil)
             if (profil.status === 200) {
                 dispatch(logIn())
                 dispatch(userInfo(profil.body))
@@ -55,7 +53,7 @@ function Login() {
         }
 
     }
-   
+
     return (
         <main className="main bg-dark login">
             <section className="sign-in-content">

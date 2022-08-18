@@ -10,11 +10,9 @@ import Footer from './components/Footer';
 import store from './utils/store'
 import '../src/styles/style.css';
 import Erreur from './pages/Erreur';
-import { logIn, userInfo } from './features/userSlice';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
-
 
 root.render(
   <Provider store={store}>

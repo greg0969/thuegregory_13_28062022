@@ -1,22 +1,18 @@
-import React from 'react';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from 'react-router-dom';
 import Accounts from '../components/Accounts';
-import { getToken, logIn, updateInfo, userInfo } from "../features/userSlice";
+import { updateInfo } from "../features/userSlice";
 import { updateProfile } from "../utils/apiFetch/ApiFetch";
 
 function Profile() {
 
     let dispatch = useDispatch();
 
- 
     const [editMode, setEditMode] = useState(false);
     let token = useSelector((state) => state.user.token);
     let profil = useSelector((state) => state.user.currentUser);
     const [inputData, setInputData] = useState({ firstName: profil.firstName, lastName: profil.lastName });
-
-
+    
     const handleChange = (event) => {
         const { name, value } = event.target;
         setInputData(prevInputData => ({
@@ -27,21 +23,21 @@ function Profile() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        updateProfile(inputData.firstName, inputData.lastName,token)
+        updateProfile(inputData.firstName, inputData.lastName, token)
             .then(data => dispatch(updateInfo(data)))
             .catch(err => console.log("error", err))
         setEditMode(false);
     }
-   
+     
     return (
         <main className="main bg-dark">
             <div className="profile-header">
+
                 <h1>
                     Welcome back
                     <br />
                     {inputData.firstName} {inputData.lastName}
                 </h1>
-
                 {editMode ?
                     <div className='change-data'>
                         <div className='change-data-input'>

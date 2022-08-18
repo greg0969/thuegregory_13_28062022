@@ -11,7 +11,6 @@ export const getLogin = (email, password) => {
     password,
   })
   .then((response) => {
-      localStorage.setItem('token', response.data.body.token);
       return response.data.body.token
       
     })
@@ -30,7 +29,9 @@ export const getProfile = (token) => {
     }
   )
   
-  .then((response) => response.data)
+  .then((response) => {
+    return response.data 
+  })
   
 };
 
